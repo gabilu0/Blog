@@ -29,7 +29,8 @@ connection
 // rotas
 app.get('/', (require, response) => {
     Article.findAll({
-        order: [[ 'id', 'DESC' ]]
+        order: [[ 'id', 'DESC' ]],
+        limit: 4
     }).then(articles => {
         Category.findAll()
             .then( categories => {
@@ -58,7 +59,7 @@ app.get('/category/:slug', (request, response) => {
     const slug = request.params.slug
     
     Category.findOne({
-        where: { slug: slug},
+        where: { slug: slug },
         include: [{model: Article}]
     }).then( category => {
         if(category != undefined){
@@ -67,6 +68,7 @@ app.get('/category/:slug', (request, response) => {
                     response.render('index', { 
                         articles: category.articles, 
                         categories: categories})
+                       
                 })
         } else {
             response.render('/')

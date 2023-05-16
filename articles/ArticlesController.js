@@ -50,6 +50,7 @@ router.post('/articles/delete', (request, response) => {
     }
 })
 
+
 router.get('/admin/articles/edit/:id', (request, response) => {
     const id = request.params.id
 
@@ -58,12 +59,72 @@ router.get('/admin/articles/edit/:id', (request, response) => {
             if (article != undefined) {
                 Category.findAll()
                     .then(categories => {
-                        response.render('admin/articles/edit', { categories: categories })
+                        response.render('admin/articles/edit', { 
+                            article: article, categories: categories })
                     })
+            } else {
+                response.redirect('/admin/articles')
             }
         }).catch(error => {
             response.redirect('/admin/articles')
         })
 })
+
+router.post('/articles/update', (request, response) => {
+    const id = request.body.id
+    const title = request.body.title
+    const body = request.body.body
+    const category = request.body.category
+
+    Article.update({
+        title: title,
+        body: body,
+        categoryId: category,
+        slug: slugify(title)
+    },
+        { where: { id: id } }
+    ).then(() => {
+        response.redirect('/admin/articles')
+    }).catch(error => {
+        response.redirect('/')
+    })
+})
+
+router.get('/articles/page/:num', (request, response) => {
+    const page = request.params.num;
+    const articlesPerPage = 4;
+    let offset = 0;
+
+    if (isNaN(page) || page === 1) {
+        offset = 0;
+    } else {
+        offset = (page - 1) * articlesPerPage;
+    }
+
+    Article.findAndCountAll({
+        limit: articlesPerPage,
+        offset: offset,
+        order: [['id', 'DESC']]
+    }).then(articles => {
+        let next;
+        if (offset + articles.rows.length >= articles.count) {
+            next = false;
+        } else {
+            next = true;
+        }
+        const result = {
+            page: parseInt(page),
+            next: next,
+            articles: articles
+        };
+
+        Category.findAll().then(categories => {
+            response.render('admin/articles/page', {
+                result: result,
+                categories: categories
+            });
+        });
+    });
+});
 
 module.exports = router

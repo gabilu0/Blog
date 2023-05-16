@@ -11,7 +11,6 @@
                 <th>ID</th>
                 <th>Título</th>
                 <th>Slug</th>
-                <th>Categoria</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -22,8 +21,9 @@
                     <td><%= article.id %></td>
                     <td><%= article.title %></td>
                     <td><%= article.slug %></td>
-                    <td><%= article.category.title %></td>
+                    
                     <td>
+                        <a href="/admin/articles/edit/<%= article.id %>" class="btn btn-warning">Editar</a>
                         <form method="post" action="/articles/delete" style="display: inline;" onsubmit="confirmDelete(event, this)">
                             <input type="hidden" name="id" value="<%= article.id %>">
                             <button class="btn btn-danger">Deletar</button>
