@@ -6,9 +6,11 @@ const connection = require('./db/database')
 // Controller
 const categoriesController = require('./categories/CategoriesController')
 const articlesController = require('./articles/ArticlesController')
+const usersController = require('./users/UsersController')
 
 const Article = require('./articles/Article')
 const Category = require('./categories/Category')
+const User = require('./users/User')
 
 // View engine
 app.set('view engine', 'ejs')
@@ -80,6 +82,7 @@ app.get('/category/:slug', (request, response) => {
 
 app.use('/', categoriesController)
 app.use('/', articlesController)
+app.use('/', usersController)
 
 // Abrindo servidor
 app.listen(3000, () => {
