@@ -12,7 +12,7 @@ router.get('/admin/users', adminAuth, (request, response) => {
         })
 })
 
-router.get('/admin/users/create', adminAuth, (request, response) => {
+router.get('/admin/users/create', (request, response) => {
     response.render('admin/users/create')
 })
 
