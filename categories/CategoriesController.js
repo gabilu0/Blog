@@ -2,9 +2,10 @@ const express = require('express')
 const slugify = require('slugify')
 const router = express.Router()
 const Category = require('./Category')
+const adminAuth = require('../middlewares/adminAuth')
 
 // Rotas
-router.get('/admin/categories/new', (request, response) => {
+router.get('/admin/categories/new', adminAuth, (request, response) => {
     response.render('admin/categories/new')
 })
 
@@ -20,7 +21,7 @@ router.post('/categories/save', (request, response) => {
     }
 })
 
-router.get('/admin/categories', (request, response) => {
+router.get('/admin/categories', adminAuth, (request, response) => {
     Category.findAll()
         .then(category => {
             response.render('admin/categories/index', { categories: category })
@@ -41,7 +42,7 @@ router.post('/categories/delete', (request, response) => {
     }
 })
 
-router.get('/admin/categories/edit/:id', (request, response) => {
+router.get('/admin/categories/edit/:id', adminAuth, (request, response) => {
     const id = request.params.id
 
     if (isNaN(id)) {

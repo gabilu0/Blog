@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const session = require('express-session')
 const connection = require('./db/database')
 
 // Controller
@@ -15,6 +16,14 @@ const User = require('./users/User')
 // View engine
 app.set('view engine', 'ejs')
 
+// Session
+app.use(session({
+    resave: false,
+    saveUninitialized: false,
+    secret: "sapoloucodebermudaeespada",
+    cookie: { maxAge: 300000 }
+}))
+
 // Static
 app.use(express.static('public'))
 
@@ -24,11 +33,13 @@ app.use(bodyParser.json())
 
 // Conexão com banco
 connection
-    .authenticate()
-    .then( () => console.log('Conectado com Banco de dados!'))
-    .catch( error => console.log(error))
+.authenticate()
+.then( () => console.log('Conectado com Banco de dados!'))
+.catch( error => console.log(error))
 
 // rotas
+app.use('/', usersController)
+
 app.get('/', (require, response) => {
     Article.findAll({
         order: [[ 'id', 'DESC' ]],
@@ -80,9 +91,9 @@ app.get('/category/:slug', (request, response) => {
     })
 })
 
+
 app.use('/', categoriesController)
 app.use('/', articlesController)
-app.use('/', usersController)
 
 // Abrindo servidor
 app.listen(3000, () => {
